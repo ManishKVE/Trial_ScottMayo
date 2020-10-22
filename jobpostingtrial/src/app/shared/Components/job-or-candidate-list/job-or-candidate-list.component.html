@@ -1,0 +1,89 @@
+
+<div class="container mt-3" *ngIf="Role == 'candidate'">
+    <div class="align-content-middle"  >
+       <h1>Job Listing</h1> 
+    </div>
+    <br>
+    <br>
+    <table class="table table-striped">
+        <thead>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Department</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Detail</th>
+        </thead>
+        <tr *ngFor="let u of jobs">
+            <td>
+                {{u.id}}
+            </td>
+            <td>
+                {{u.title}}
+            </td>
+            <td>
+                {{u.department}}
+            </td>
+            <td>
+                {{u.location}}
+            </td>
+            <td [ngStyle]="{'color':u.jobStatus?'green':'red' }">
+                {{u.jobStatus?'active':'expired'}}
+            </td>
+            <td>
+                <a routerLink="{{u.id}}">DETAIL</a>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+
+<div class="container mt-3" *ngIf="Role == 'recuitment'">
+    <div class="align-content-middle"  >
+       <h1>Candidate Listing</h1> 
+       <table class="table table-striped">
+        <thead>
+            <th>Title</th>
+            <th>FirstName</th>
+            <th>LastName</th>
+            <th>Gender</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>DateOfBirth</th>
+            <th>YearsOfExperience</th>
+            <th>ReasonForJobChange</th>
+        </thead>
+        <tr *ngFor="let u of Candidates">
+            <td>
+                {{u.Title}}
+            </td>
+            <td>
+                {{u.FirstName}}
+            </td>
+            <td>
+                {{u.LastName}}
+            </td>
+            <td>
+                {{u.Gender}}
+            </td>
+            <td>
+                {{u.Email}}
+            </td>
+            <td>
+                {{u.Phone}}
+            </td>
+            <td>
+                {{u.DateOfBirth}}
+            </td>
+            <td>
+                {{u.YearsOfExperience}}
+            </td>
+            <td>
+                {{u.ReasonForJobChange}}
+            </td>
+            
+        </tr>
+    </table>
+       </div>
+       </div>

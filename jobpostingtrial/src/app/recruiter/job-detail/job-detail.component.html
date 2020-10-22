@@ -1,0 +1,31 @@
+<div class="container">
+    <div class="row" *ngIf="loaded">
+        <div class="col-4">
+
+        </div>
+        <br>
+        <br>
+        <table class="table">
+            <tr>
+                <td>Job Title</td>
+                <td> {{job.title}} </td>
+            </tr>
+            <tr>
+                <td>Description</td>
+                <td> {{job.description}} </td>
+            </tr>
+            <tr>
+                <td>Location </td>
+                <td> {{job.location}} </td>
+            </tr>
+            <tr>
+                <td>Department</td>
+                <td> {{job.department}} </td>
+            </tr>
+            <tr>
+                <td>Status</td>
+                <td> {{job.jobStatus?'active':'expired'}} </td>
+            </tr>
+        </table>
+    </div>
+</div>
