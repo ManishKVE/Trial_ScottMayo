@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { TextInputComponent } from './Components/text-input/text-input.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JobOrCandidateListComponent } from './Components/job-or-candidate-list/job-or-candidate-list.component';
+import { MatTableModule } from '@angular/material/table';
+import { CdkTableModule } from '@angular/cdk/table';
 import { RouterModule } from '@angular/router';
-
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [TextInputComponent, JobOrCandidateListComponent],
@@ -12,7 +14,10 @@ import { RouterModule } from '@angular/router';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    RouterModule
+    RouterModule,
+    MatTableModule,
+    CdkTableModule,
+    MatSortModule
   ],
   exports: [TextInputComponent, JobOrCandidateListComponent]
 })

@@ -1,10 +1,12 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { RecruiterService } from 'src/app/recruiter/recruiter.service';
 import { JobFetch } from 'src/app/recruiter/job-fetch';
 import { Job } from 'src/app/recruiter/job-data';
 import { Candidate } from 'src/app/recruiter/candidate.data';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CandidateFetch } from 'src/app/recruiter/candidate-fetch';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
 
 declare var $: any;
 
@@ -16,8 +18,10 @@ declare var $: any;
 export class JobOrCandidateListComponent implements OnInit {
   displayData: boolean;
   job: JobFetch;
-  jobs: Job[] = [];
-  Candidates: Candidate[] = [];
+  // jobs: Job[] = [];
+  // Candidates: Candidate[] = [];
+  jobs: any;
+  Candidates: any;
   @Input('Role') Role: string;
   jobPostForm: FormGroup;
   detailData: JobFetch;
@@ -27,7 +31,10 @@ export class JobOrCandidateListComponent implements OnInit {
   Title: any = ['Mr', 'Mrs', 'Miss'];
   Gender: any = ['Male', 'Female', 'Other'];
   Location: any = ['India', 'US', 'UK', 'France', 'Russia', 'Japan', 'Canada'];
-
+  @ViewChild(MatSort) sortJobs: MatSort;
+  @ViewChild(MatSort) sortCandidiate: MatSort;
+  displayedColumns: string[] = ['Id', 'Title', 'Department', 'Location', 'Status'];
+  displayedColumnsCandidiate: string[] = ['Title', 'FirstName', 'LastName', 'Gender', 'Email', 'Phone', 'DateOfBirth', 'YearsOfExperience', 'Details'];
 
   constructor(private recruterService: RecruiterService, private fb: FormBuilder) { }
 
@@ -40,18 +47,26 @@ export class JobOrCandidateListComponent implements OnInit {
   }
 
   getJobs() {
-    this.recruterService.getJobs().subscribe((data: Job[]) => {
-      this.jobs = data;
-      console.log(this.jobs);
+    this.recruterService.getJobs().subscribe((data: any) => {
+      this.jobs = new MatTableDataSource<Job>();
+      this.jobs.data = data;
+      this.jobs.sort = this.sortJobs;
     });
   }
 
   getCandidates() {
-    this.recruterService.getCandidates().subscribe((data: Candidate[]) => {
-      this.Candidates = data;
-      debugger;
-      // console.log(this.jobs);
+    this.recruterService.getCandidates().subscribe((data: any) => {
+      this.Candidates = new MatTableDataSource<Candidate>();
+      this.Candidates.data = data;
+      this.Candidates.sort = this.sortCandidiate;
     });
+  }
+
+  applyFilter(filterValue: string, source: string) {
+    if (source == "jobs")
+      this.jobs.filter = filterValue.trim().toLowerCase();
+    else
+      this.Candidates.filter = filterValue.trim().toLowerCase();
   }
 
   getElemStyle(status) {
@@ -154,8 +169,9 @@ export class JobOrCandidateListComponent implements OnInit {
     document.getElementById('close-modal-candidate').click();
   }
   showModalCandidate(data: CandidateFetch) {
+    debugger;
     this.selectedCandidate = data;
-    this.candidateAppliedJobs = this.jobs.filter(job => job.id === this.selectedCandidate.jobid);
+    this.candidateAppliedJobs = this.jobs.data.filter(job => job.id === this.selectedCandidate.jobid);
     $('#myModalCandidate').modal('show');
   }
 

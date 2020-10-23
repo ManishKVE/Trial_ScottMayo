@@ -22,7 +22,8 @@ import { JobDataService } from './recruiter/job-data.service';
     CoreModule,
     HttpClientModule,
     FormsModule,
-    InMemoryWebApiModule.forRoot(JobDataService)
+    InMemoryWebApiModule.forRoot(JobDataService),
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
