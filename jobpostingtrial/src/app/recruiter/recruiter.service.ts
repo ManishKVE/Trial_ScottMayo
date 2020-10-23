@@ -6,15 +6,17 @@ import { tap, catchError, map } from 'rxjs/operators';
 import { Job } from './job-data';
 import { JobFetch } from './job-fetch';
 import { ICandidate } from '../shared/models/recruiter';
+import { Candidate } from './candidate.data';
+import { CandidateFetch } from './candidate-fetch';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecruiterService {
 
-  apiurl = 'api/jobs';  
-candidateapiurl='api/Candidates'   
-              // Our created Data can be accessed here at api/users
+  apiurl = 'api/jobs';
+  candidateapiurl = 'api/Candidates';
+  // Our created Data can be accessed here at api/users
   headers = new HttpHeaders().set('Content-Type', 'application/json').set('Accept', 'application/json');
   httpOptions = {
     headers: this.headers
@@ -33,14 +35,21 @@ candidateapiurl='api/Candidates'
     );
   }
 
-  getCandidates(): Observable<ICandidate[]> {
-    return this.http.get<ICandidate[]>(this.candidateapiurl).pipe(
+  getCandidates(): Observable<Candidate[]> {
+    return this.http.get<Candidate[]>(this.candidateapiurl).pipe(
       tap(data => console.log('service get')),
       catchError(this.handleError)
     );
   }
 
-  
+  addCandidate(candidate: CandidateFetch): Observable<CandidateFetch> {
+    // candidate.id = null;
+    return this.http.post<CandidateFetch>(this.candidateapiurl, candidate, this.httpOptions).pipe(
+      tap(data => console.log(data)),
+      catchError(this.handleError)
+    );
+  }
+
 
   // addJob(user: JobFetch): Observable<JobFetch> {
   //   user.id = null;

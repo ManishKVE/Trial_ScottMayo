@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TextInputComponent } from './Components/text-input/text-input.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JobOrCandidateListComponent } from './Components/job-or-candidate-list/job-or-candidate-list.component';
+import { RouterModule } from '@angular/router';
 
 
 @NgModule({
   declarations: [TextInputComponent, JobOrCandidateListComponent],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    FormsModule,
+    ReactiveFormsModule,
+    RouterModule
   ],
-  exports: [TextInputComponent,JobOrCandidateListComponent]
+  exports: [TextInputComponent, JobOrCandidateListComponent]
 })
 export class SharedModule { }

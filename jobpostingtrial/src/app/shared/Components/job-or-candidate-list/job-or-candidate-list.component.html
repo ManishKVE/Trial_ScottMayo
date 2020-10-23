@@ -1,7 +1,6 @@
-
 <div class="container mt-3" *ngIf="Role == 'candidate'">
-    <div class="align-content-middle"  >
-       <h1>Job Listing</h1> 
+    <div class="align-content-middle">
+        <h1>Job List</h1>
     </div>
     <br>
     <br>
@@ -12,14 +11,14 @@
             <th>Department</th>
             <th>Location</th>
             <th>Status</th>
-            <th>Detail</th>
         </thead>
         <tr *ngFor="let u of jobs">
             <td>
                 {{u.id}}
             </td>
             <td>
-                {{u.title}}
+                <a data-toggle="modal" data-target="#myModal" class="primary" (click)="showModal(u)"
+                    style="cursor: pointer;">{{u.title}}</a>
             </td>
             <td>
                 {{u.department}}
@@ -30,9 +29,6 @@
             <td [ngStyle]="{'color':u.jobStatus?'green':'red' }">
                 {{u.jobStatus?'active':'expired'}}
             </td>
-            <td>
-                <a routerLink="{{u.id}}">DETAIL</a>
-            </td>
         </tr>
     </table>
 
@@ -40,50 +36,337 @@
 
 
 <div class="container mt-3" *ngIf="Role == 'recuitment'">
-    <div class="align-content-middle"  >
-       <h1>Candidate Listing</h1> 
-       <table class="table table-striped">
-        <thead>
-            <th>Title</th>
-            <th>FirstName</th>
-            <th>LastName</th>
-            <th>Gender</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>DateOfBirth</th>
-            <th>YearsOfExperience</th>
-            <th>ReasonForJobChange</th>
-        </thead>
-        <tr *ngFor="let u of Candidates">
-            <td>
-                {{u.Title}}
-            </td>
-            <td>
-                {{u.FirstName}}
-            </td>
-            <td>
-                {{u.LastName}}
-            </td>
-            <td>
-                {{u.Gender}}
-            </td>
-            <td>
-                {{u.Email}}
-            </td>
-            <td>
-                {{u.Phone}}
-            </td>
-            <td>
-                {{u.DateOfBirth}}
-            </td>
-            <td>
-                {{u.YearsOfExperience}}
-            </td>
-            <td>
-                {{u.ReasonForJobChange}}
-            </td>
-            
-        </tr>
-    </table>
-       </div>
-       </div>
+    <div class="align-content-middle">
+        <h1>Candidate List</h1>
+        <table class="table table-striped">
+            <thead>
+                <th>Title</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>DateOfBirth</th>
+                <th>YearsOfExperience</th>
+                <!-- <th>ReasonForJobChange</th> -->
+                <th>DETAIL</th>
+            </thead>
+            <tr *ngFor="let u of Candidates">
+                <td>
+                    {{u.Title}}
+                </td>
+                <td>
+                    {{u.FirstName}}
+                </td>
+                <td>
+                    {{u.LastName}}
+                </td>
+                <td>
+                    {{u.Gender}}
+                </td>
+                <td>
+                    {{u.Email}}
+                </td>
+                <td>
+                    {{u.Phone}}
+                </td>
+                <td>
+                    {{u.DateOfBirth}}
+                </td>
+                <td>
+                    {{u.YearsOfExperience}}
+                </td>
+                <!-- <td>
+                    {{u.ReasonForJobChange}}
+                </td> -->
+                <td>
+                    <a data-toggle="modal" data-target="#myModalCandidate" class="primary"
+                        (click)="showModalCandidate(u)" style="cursor: pointer;">DETAIL</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal" *ngIf="detailData">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <!-- <div class="modal-header">
+                <button type="button" class="close" (click)="hideModal()">&times;</button>
+            </div> -->
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="container mt-2">
+                    <div>
+                        <div>
+                            <div class="card text-center">
+                                <div class="card-header">
+                                    Featured <button type="button" class="close" (click)="hideModal()">&times;</button>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title"> {{detailData.title}} </h5>
+                                    <p class="card-text">
+                                        {{detailData.description}}
+                                    </p>
+                                    <!-- <a (click)="applyJob()" class="btn btn-success">click to apply</a> -->
+                                    <a data-toggle="modal" data-target="#myModalApply" class="btn btn-outline-primary"
+                                        (click)="applyJob()" style="cursor: pointer;">click to apply</a>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    {{detailData.location}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="sendModal()">Apply</button>
+                <button type="button" class="btn btn-danger" (click)="hideModal()">Close</button>
+                <button type="button" id="close-modal" data-dismiss="modal" style="display: none">Close</button>
+            </div> -->
+            <button type="button" id="close-modal" data-dismiss="modal" style="display: none">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModalApply">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Candidate Information</h4>
+                <button type="button" class="close" (click)="hideModalApply()">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="container">
+                    <div>
+                        <div class=" ">
+                            <form class="" [formGroup]="jobPostForm" (ngSubmit)="onSubmit()">
+                                <!-- <div class="d-flex justify-content-between align-items-center">
+                                    <h4>Please provide below details :</h4>
+                                </div> -->
+                                <div class="row" formGroupName="jobForm">
+                                    <div class="form-group col-6">
+                                        <!-- <app-text-input [label]="'Title'" formControlName="Title"></app-text-input> -->
+                                        <select class="custom-select" (change)="changeTitle($event.target.value)"
+                                            formControlName="Title">
+                                            <option value="">Select Title</option>
+                                            <option *ngFor="let title of Title" [ngValue]="title">{{title}}</option>
+                                        </select>
+                                        <div *ngIf="jobPostForm.get('jobForm.Title').touched && jobPostForm.get('jobForm.Title').invalid"
+                                            class="">
+                                            <span class="danger"
+                                                *ngIf="jobPostForm.get('jobForm.Title').errors.required"
+                                                style="color:red;font-size: smaller;">Title is required.</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <app-text-input [label]="'First Name'" formControlName="FirstName">
+                                        </app-text-input>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <app-text-input [label]="'Last Name'" formControlName="LastName">
+                                        </app-text-input>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <!-- <app-text-input [label]="'Gender'" formControlName="Gender"> </app-text-input> -->
+                                        <select class="custom-select" (change)="changeGender($event.target.value)"
+                                            formControlName="Gender">
+                                            <option value="">Select Gender</option>
+                                            <option *ngFor="let gender of Gender" [ngValue]="gender">{{gender}}</option>
+                                        </select>
+                                        <div *ngIf="jobPostForm.get('jobForm.Gender').touched && jobPostForm.get('jobForm.Gender').invalid"
+                                            class="">
+                                            <span class="danger"
+                                                *ngIf="jobPostForm.get('jobForm.Gender').errors.required"
+                                                style="color:red;font-size: smaller;">Gender is required.</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <app-text-input [label]="'Email'" formControlName="Email"></app-text-input>
+                                    </div>
+
+                                    <div class="form-group col-6">
+                                        <app-text-input [label]="'Phone'" formControlName="Phone"
+                                            pattern="^([\\+][0-9]{1,3}([ \\.\\-])?)?([\\(]{1}[0-9]{3}[\\)])?([0-9A-Z \\.\\-]{1,32})((x|ext|extension)?[0-9]{1,4}?)$">
+                                        </app-text-input>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <app-text-input [label]="'DOB'" formControlName="DateOfBirth" type="date"></app-text-input>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <app-text-input [label]="'Years Of Experience'"
+                                            formControlName="YearsOfExperience"></app-text-input>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <select class="custom-select" (change)="changeLocation($event.target.value)"
+                                            formControlName="Location">
+                                            <option value="">Select Location</option>
+                                            <option *ngFor="let location of Location" [ngValue]="location">{{location}}
+                                            </option>
+                                        </select>
+                                        <div *ngIf="jobPostForm.get('jobForm.Location').touched && jobPostForm.get('jobForm.Location').invalid"
+                                            class="">
+                                            <span class="danger"
+                                                *ngIf="jobPostForm.get('jobForm.Location').errors.required"
+                                                style="color:red;font-size: smaller;">Location is required.</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <!-- <app-text-input [label]="'Reason For Job Change'"
+                                            formControlName="ReasonForJobChange"></app-text-input> -->
+                                        <textarea class="form-control" formControlName="ReasonForJobChange"
+                                            placeholder="Reason For Job Change" rows="3"></textarea>
+                                        <div *ngIf="jobPostForm.get('jobForm.ReasonForJobChange').touched && jobPostForm.get('jobForm.ReasonForJobChange').invalid"
+                                            class="">
+                                            <span class="danger"
+                                                *ngIf="jobPostForm.get('jobForm.ReasonForJobChange').errors.required"
+                                                style="color:red;font-size: smaller;">Reason For Change is
+                                                required.</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-6 mt-2">
+                                        <div style="float: left;">
+                                            <button [disabled]="jobPostForm.invalid" class="btn btn-primary mr-2"
+                                                type="submit" (click)="onApply()">
+                                                Apply
+                                            </button>
+                                            <button type="button" class="btn btn-danger"
+                                                (click)="hideModalApply()">Close</button>
+                                            <button type="button" id="close-modal-apply" data-dismiss="modal"
+                                                style="display: none">Close</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-primary" (click)="sendModalApply()">Apply</button>
+                <button type="button" class="btn btn-danger" (click)="hideModalApply()">Close</button> -->
+
+                <!-- this button is hidden, used to close from typescript -->
+                <button type="button" id="close-modal-apply" data-dismiss="modal" style="display: none">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModalCandidate" *ngIf="selectedCandidate">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Candidate Detail</h4>
+                <button type="button" class="close" (click)="hideModalCandidate()">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Title:</label>
+                            <label style="margin-left: 100px;"> {{selectedCandidate.Title}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> First Name:</label>
+                            <label style="margin-left: 55px;"> {{selectedCandidate.FirstName}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Last Name:</label>
+                            <label style="margin-left: 55px;"> {{selectedCandidate.LastName}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Gender:</label>
+                            <label style="margin-left: 78px;"> {{selectedCandidate.Gender}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Email:</label>
+                            <label style="margin-left: 93px;"> {{selectedCandidate.Email}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Phone:</label>
+                            <label style="margin-left: 85px;"> {{selectedCandidate.Phone}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> DOB:</label>
+                            <label style="margin-left: 98px;"> {{selectedCandidate.DateOfBirth}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Years Of Experience:</label>
+                            <label> {{selectedCandidate.YearsOfExperience}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Location:</label>
+                            <label style="margin-left: 75px;"> {{selectedCandidate.Location}} </label>
+                        </div>
+                        <div class="col-8">
+                            <label class="mr-4 mb-2"> Reason For Change:</label>
+                            <label> {{selectedCandidate.ReasonForJobChange}} </label>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-8">
+                            <h4>Job Applied</h4>
+                            <label *ngIf="!candidateAppliedJobs">No jobs found for this candidate</label>
+                        </div>
+                        <table class="table table-striped">
+                            <thead>
+                                <!-- <th>Id</th> -->
+                                <th>Title</th>
+                                <th>Department</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                            </thead>
+                            <tr *ngFor="let u of candidateAppliedJobs">
+                                <!-- <td>
+                                    {{u.id}}
+                                </td> -->
+                                <td>
+                                    {{u.title}}
+                                </td>
+                                <td>
+                                    {{u.department}}
+                                </td>
+                                <td>
+                                    {{u.location}}
+                                </td>
+                                <td [ngStyle]="{'color':u.jobStatus?'green':'red' }">
+                                    {{u.jobStatus?'active':'expired'}}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-primary" (click)="sendModalCandidate()">Apply</button> -->
+                <button type="button" class="btn btn-danger" (click)="hideModalCandidate()">Close</button>
+
+                <!-- this button is hidden, used to close from typescript -->
+                <button type="button" id="close-modal-candidate" data-dismiss="modal"
+                    style="display: none">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
