@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
-import { RecruiterService } from 'src/app/recruiter/recruiter.service';
-import { JobFetch } from 'src/app/recruiter/job-fetch';
-import { Job } from 'src/app/recruiter/job-data';
-import { Candidate } from 'src/app/recruiter/candidate.data';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { CandidateFetch } from 'src/app/recruiter/candidate-fetch';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ToastrService } from 'ngx-toastr';
+import { JobFetch } from '../../Data/job-fetch';
+import { CandidateFetch } from '../../Data/candidate-fetch';
+import { Job } from '../../Data/job-data';
+import { Candidate } from '../../Data/candidate.data';
+import { DataService } from '../../service/data.service';
 
 declare var $: any;
 
@@ -18,8 +19,6 @@ declare var $: any;
 export class JobOrCandidateListComponent implements OnInit {
   displayData: boolean;
   job: JobFetch;
-  // jobs: Job[] = [];
-  // Candidates: Candidate[] = [];
   jobs: any;
   Candidates: any;
   @Input('Role') Role: string;
@@ -27,27 +26,31 @@ export class JobOrCandidateListComponent implements OnInit {
   detailData: JobFetch;
   selectedCandidate: CandidateFetch;
   JobId = 0;
+  showDetailPageData: boolean;
   candidateAppliedJobs: Job[] = [];
   Title: any = ['Mr', 'Mrs', 'Miss'];
-  Gender: any = ['Male', 'Female', 'Other'];
+  Gender: any = ['Male', 'Female'];
   Location: any = ['India', 'US', 'UK', 'France', 'Russia', 'Japan', 'Canada'];
   @ViewChild(MatSort) sortJobs: MatSort;
   @ViewChild(MatSort) sortCandidiate: MatSort;
-  displayedColumns: string[] = ['Id', 'Title', 'Department', 'Location', 'Status'];
+  displayedColumns: string[] = ['id', 'title', 'department', 'location', 'jobStatus'];
   displayedColumnsCandidiate: string[] = ['Title', 'FirstName', 'LastName', 'Gender', 'Email', 'Phone', 'DateOfBirth', 'YearsOfExperience', 'Details'];
 
-  constructor(private recruterService: RecruiterService, private fb: FormBuilder) { }
+  constructor(private dataSrv: DataService, private fb: FormBuilder, private toast: ToastrService) { }
 
   ngOnInit() {
     console.log(this.Role);
     this.getJobs();
     this.getCandidates();
-    // this.getJob();
     this.createjobPostForm();
   }
 
+  showDetailPage(data) {
+    this.showDetailPageData = true;
+  }
+
   getJobs() {
-    this.recruterService.getJobs().subscribe((data: any) => {
+    this.dataSrv.getJobs().subscribe((data: any) => {
       this.jobs = new MatTableDataSource<Job>();
       this.jobs.data = data;
       this.jobs.sort = this.sortJobs;
@@ -55,7 +58,7 @@ export class JobOrCandidateListComponent implements OnInit {
   }
 
   getCandidates() {
-    this.recruterService.getCandidates().subscribe((data: any) => {
+    this.dataSrv.getCandidates().subscribe((data: any) => {
       this.Candidates = new MatTableDataSource<Candidate>();
       this.Candidates.data = data;
       this.Candidates.sort = this.sortCandidiate;
@@ -63,45 +66,23 @@ export class JobOrCandidateListComponent implements OnInit {
   }
 
   applyFilter(filterValue: string, source: string) {
-    if (source == "jobs")
+    if (source === 'jobs') {
       this.jobs.filter = filterValue.trim().toLowerCase();
-    else
+    }
+    else {
       this.Candidates.filter = filterValue.trim().toLowerCase();
+    }
   }
-
-  getElemStyle(status) {
-    const elemstyle = {
-      color: status === true ? 'green' : 'red'
-    };
-    return elemstyle;
-  }
-  // fetchId = 0;
-
-  // getJob() {
-  //   this.recruterService.getJob(this.fetchId).subscribe(data => {
-  //     this.job = data;
-  //     this.displayData = true;
-  //   });
-  // }
 
   idtoUpdate = 0;
-  updateJob() {
-    // this.recruterService.getJob(this.idtoUpdate).subscribe(data => {
-    //   this.job = data;
-    //   this.job.model = 'Updated Model';
-    //   this.recruterService.updateJob(this.job).subscribe(data1 => {
-    //     this.getJobs();
-    //   });
-    // });
-    // public Title = '', public FirstName = '', public LastName = '', public Gender = '',
-    // public Email = '', public Phone = '', public DateOfBirth = '', public YearsOfExperience = '', public ReasonForJobChange = ''
-  }
+
   createjobPostForm(): void {
     this.jobPostForm = this.fb.group({
       jobForm: this.fb.group({
         Title: ['', Validators.required],
         jobid: [this.detailData ? this.detailData.id : null, null],
         FirstName: ['', Validators.required],
+        // Validators.pattern('^[_A-z0-9]*((-|\s)*[_A-z0-9])*$')],
         LastName: ['', Validators.required],
         Gender: ['', Validators.required],
         Email: ['', [Validators.required,
@@ -122,7 +103,8 @@ export class JobOrCandidateListComponent implements OnInit {
     this.detailData = null;
     this.JobId = data.id;
     if (!data.jobStatus) {
-      alert('job expired!');
+      // alert('job expired!');
+      this.toast.error('This job has expired!', 'expired');
       return false;
     } else {
       this.detailData = data;
@@ -145,9 +127,10 @@ export class JobOrCandidateListComponent implements OnInit {
   }
   onApply() {
     // console.log(this.jobPostForm.get('jobForm').value);
-    this.recruterService.addCandidate((this.jobPostForm.get('jobForm').value)).subscribe(
+    this.dataSrv.addCandidate((this.jobPostForm.get('jobForm').value)).subscribe(
       (response) => {
-        alert('application sent to recruiter!');
+        // alert('application sent to recruiter!');
+        this.toast.success('application sent to recruiter!', 'success');
         document.getElementById('close-modal-apply').click();
       }
     );
@@ -176,15 +159,42 @@ export class JobOrCandidateListComponent implements OnInit {
   }
 
   changeTitle(e) {
+    var gender = e.target.value.split(':')[1].trim() === 'Mr' ? 'Male' : 'Female';
     this.jobPostForm.get('jobForm').get('Title').setValue(e.target.value, {
       onlySelf: true
     });
+    this.jobPostForm.get('jobForm').get('Gender').setValue(gender, {
+      onlySelf: true
+    });
   }
+
+  getTitle(row) {
+    if (row.Title.includes(':')) {
+      return row.Title.split(':')[1].trim();
+    } else {
+      return row.Title;
+    }
+  }
+
   changeGender(e) {
+    debugger;
+    var title = e.target.value.split(':')[1].trim() === 'Male' ? 'Mr' : 'Mrs';
+    this.jobPostForm.get('jobForm').get('Title').setValue(title, {
+      onlySelf: true
+    });
     this.jobPostForm.get('jobForm').get('Gender').setValue(e.target.value, {
       onlySelf: true
     });
   }
+
+  getGender(row) {
+    if (row.Gender.includes(':')) {
+      return row.Gender.split(':')[1].trim();
+    } else {
+      return row.Gender;
+    }
+  }
+
   changeLocation(e) {
     this.jobPostForm.get('jobForm').get('Location').setValue(e.target.value, {
       onlySelf: true

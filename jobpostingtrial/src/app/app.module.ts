@@ -8,12 +8,12 @@ import { CoreModule } from './core/core.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-import { JobDataService } from './recruiter/job-data.service';
-
+import { ToastrModule } from 'ngx-toastr';
+import { JobDataService } from './shared/Data/job-data.service';
 @NgModule({
   declarations: [
     AppComponent,
-    
+
   ],
   imports: [
     BrowserModule,
@@ -23,7 +23,11 @@ import { JobDataService } from './recruiter/job-data.service';
     HttpClientModule,
     FormsModule,
     InMemoryWebApiModule.forRoot(JobDataService),
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      positionClass: 'toast-top-right',
+      preventDuplicates: true
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

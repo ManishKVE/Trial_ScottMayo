@@ -1,8 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { RecruiterService } from './recruiter.service';
-
-import { Job } from './job-data';
-import { JobFetch } from './job-fetch';
 
 @Component({
   selector: 'app-recruiter',
@@ -11,15 +7,13 @@ import { JobFetch } from './job-fetch';
 })
 export class RecruiterComponent implements OnInit {
   displayData: boolean;
-  job: JobFetch;
-  jobs: Job[] = [];
+
  
 
-  constructor(private recruterService: RecruiterService) { }
+  constructor() { }
 
   ngOnInit() {
-    //this.getJobs();
-    // this.getJob();
+  
   }
 
 
